@@ -272,4 +272,16 @@ trait ModelHandlerTrait
         return $this->setResponse($response);
     }
 
+    public function translate_field(string $model, int $template_id, string $field)
+    {
+        $response = $this->getModelService()->execute_kw(
+            $this->db, $this->uid(), $this->password,
+            'ir.translation',
+            'translate_fields',
+            [$model, $template_id, $field]
+        );
+
+        return $this->setResponse($response);
+    }
+
 }
