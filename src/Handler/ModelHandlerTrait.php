@@ -171,15 +171,25 @@ trait ModelHandlerTrait
      */
     public function search_read(string $model, array $criteria, array $fields = [], int $limit = 0, $order = '')
     {
+        $kwargs = [
+            'fields' => $fields,
+            'limit'  => $limit,
+            'order'  => $order,
+        ];
+
+        if ($this->currentLang) {
+            $kwargs['context'] = [
+                'lang' => $this->currentLang
+            ];
+        }
+
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
             [$criteria],
-            [   'fields' => $fields,
-                'limit'  => $limit,
-                'order'  => $order,
-            ]
+            $kwargs
+            
         );
         return $this->setResponse($response);
     }
@@ -283,5 +293,4 @@ trait ModelHandlerTrait
 
         return $this->setResponse($response);
     }
-
 }

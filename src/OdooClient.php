@@ -96,6 +96,11 @@ class OdooClient
     public $response;
 
     /**
+     * @var null|string
+     */
+    private $currentLang = null;
+
+    /**
      * @param string $baseUrl The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
      * @param null|string $db PostgreSQL database of Odoo containing Odoo tables
      * @param null|string $user The username (Odoo 11 : is email)
@@ -228,6 +233,15 @@ class OdooClient
             $this->response = $response;
         }
         return $this->response;
+    }
+
+    /**
+     * @param string $lang
+     * @return null
+     */
+    public function setCurrentLang($lang)
+    {
+        $this->currentLang = $lang;
     }
 
     /**
