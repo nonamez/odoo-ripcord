@@ -53,6 +53,7 @@ trait ModelHandlerTrait
      */
     public function model_execute_splat(string $model, string $method, ...$args)
     {
+        dd(__FUNCTION__);
         $response = $this->getModelService()->execute(
             $this->db, $this->uid(), $this->password,
             $model,
@@ -105,12 +106,25 @@ trait ModelHandlerTrait
      */
     public function search(string $model, array $criteria = [], $offset = 0, $limit = 0, $order = '')
     {
+        $kwargs = [
+            'offset' => $offset,
+            'limit'  => $limit,
+            'order'  => $order
+        ];
+
+        if ($this->currentLang) {
+            $kwargs['context'] = [
+                'lang' => $this->currentLang
+            ];
+        }
+
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search',
             [$criteria],
-            ['offset' => $offset, 'limit' => $limit, 'order' => $order]
+
+            $kwargs
         );
         return $this->setResponse($response);
     }
@@ -289,6 +303,24 @@ trait ModelHandlerTrait
             'ir.translation',
             'translate_fields',
             [$model, $template_id, $field]
+        );
+
+        return $this->setResponse($response);
+    }
+
+    public function action_archive(int $template_id, int $company_id) {
+        $kwargs = [
+            'context' => [
+                'allowed_company_ids' => [$company_id]
+            ]
+        ];
+
+        $response = $this->getModelService()->execute_kw(
+            $this->db, $this->uid(), $this->password,
+            'product.template',
+            'action_archive',
+            [[$template_id]],
+            $kwargs
         );
 
         return $this->setResponse($response);
